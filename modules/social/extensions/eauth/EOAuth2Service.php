@@ -3,7 +3,7 @@
  * EOAuth2Service class file.
  *
  * @author Maxim Zemskov <nodge@yandex.ru>
- * @link http://code.google.com/p/yii-eauth/
+ * @link http://github.com/Nodge/yii-eauth/
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
@@ -16,20 +16,20 @@ require_once 'EAuthServiceBase.php';
 abstract class EOAuth2Service extends EAuthServiceBase implements IAuthService {
 
 	/**
-	 * @var string OAuth2 client id. 
+	 * @var string OAuth2 client id.
 	 */
 	protected $client_id;
-	
+
 	/**
 	 * @var string OAuth2 client secret key.
 	 */
 	protected $client_secret;
-	
+
 	/**
-	 * @var string OAuth scopes. 
+	 * @var string OAuth scopes.
 	 */
 	protected $scope = '';
-	
+
 	/**
 	 * @var array Provider options. Must contain the keys: authorize, access_token.
 	 */
@@ -37,13 +37,13 @@ abstract class EOAuth2Service extends EAuthServiceBase implements IAuthService {
 		'authorize' => '',
 		'access_token' => '',
 	);
-	
+
 	/**
 	 * @var string current OAuth2 access token.
 	 */
 	protected $access_token = '';
-	
-		
+
+
 	/**
 	 * Authenticate the user.
 	 * @return boolean whether user was successfuly authenticated.
@@ -54,48 +54,50 @@ abstract class EOAuth2Service extends EAuthServiceBase implements IAuthService {
 			$this->cancel();
 			return false;
 		}
-		
-		//Получаем "access_token" и сохр. в сессионной переменной
+
+		// Get the access_token and save them to the session.
 		if (isset($_GET['code'])) {
             $code = $_GET['code'];
 			$token = $this->getAccessToken($code);
 			if (isset($token)) {
-				$this->setState('auth_token', $token);
-				$this->access_token = $token;
+				$this->saveAccessToken($token);
 				$this->authenticated = true;
 			}
         }
-		//Получаем "code"
-		else if (!$this->hasState('auth_token')) {
+		// Redirect to the authorization page
+		else if (!$this->restoreAccessToken()) {
 			// Use the URL of the current page as the callback URL.
-			$server = Yii::app()->request->getHostInfo();
-			$path = Yii::app()->request->getUrl();
-			$url = $this->getCodeUrl($server.$path);
+			if (isset($_GET['redirect_uri'])) {
+				$redirect_uri = $_GET['redirect_uri'];
+			}
+			else {
+				$server = Yii::app()->request->getHostInfo();
+				$path = Yii::app()->request->getUrl();
+				$redirect_uri = $server.$path;
+			}
+			$url = $this->getCodeUrl($redirect_uri);
 			Yii::app()->request->redirect($url);
 		}
-		else { 	
-			$this->access_token = $this->getState('auth_token');
-			$this->authenticated = true;
-		}
-		
+
 		return $this->getIsAuthenticated();
 	}
-	
+
 	/**
 	 * Returns the url to request to get OAuth2 code.
 	 * @param string $redirect_uri url to redirect after user confirmation.
-	 * @return string url to request. 
+	 * @return string url to request.
 	 */
 	protected function getCodeUrl($redirect_uri) {
+		$this->setState('redirect_uri', $redirect_uri);
 		return $this->providerOptions['authorize'].'?client_id='.$this->client_id.'&redirect_uri='.urlencode($redirect_uri).'&scope='.$this->scope.'&response_type=code';
 	}
-	
+
 	/**
 	 * Returns the url to request to get OAuth2 access token.
-	 * @return string url to request. 
+	 * @return string url to request.
 	 */
 	protected function getTokenUrl($code) {
-		return $this->providerOptions['access_token'].'?client_id='.$this->client_id.'&client_secret='.$this->client_secret.'&code='.$code;
+		return $this->providerOptions['access_token'].'?client_id='.$this->client_id.'&client_secret='.$this->client_secret.'&code='.$code.'&redirect_uri='.urlencode($this->getState('redirect_uri'));
 	}
 
 	/**
@@ -106,19 +108,45 @@ abstract class EOAuth2Service extends EAuthServiceBase implements IAuthService {
 	protected function getAccessToken($code) {
 		return $this->makeRequest($this->getTokenUrl($code));
 	}
-	
+
+	/**
+	 * Save access token to the session.
+	 * @param string $token access token.
+	 */
+	protected function saveAccessToken($token) {
+		$this->setState('auth_token', $token);
+		$this->access_token = $token;
+	}
+
+	/**
+	 * Restore access token from the session.
+	 * @return boolean whether the access token was successfuly restored.
+	 */
+	protected function restoreAccessToken() {
+		if ($this->hasState('auth_token') && $this->getState('expires', 0) > time()) {
+			$this->access_token = $this->getState('auth_token');
+			$this->authenticated = true;
+			return true;
+		}
+		else {
+			$this->access_token = null;
+			$this->authenticated = false;
+			return false;
+		}
+	}
+
 	/**
 	 * Returns the protected resource.
 	 * @param string $url url to request.
 	 * @param array $options HTTP request options. Keys: query, data, referer.
 	 * @param boolean $parseJson Whether to parse response in json format.
-	 * @return string the response. 
+	 * @return stdClass the response.
 	 * @see makeRequest
 	 */
 	public function makeSignedRequest($url, $options = array(), $parseJson = true) {
 		if (!$this->getIsAuthenticated())
-			throw new CHttpException(401, 'Unable to complete the authentication because the required data was not received.');
-		
+			throw new CHttpException(401, Yii::t('eauth', 'Unable to complete the request because the user was not authenticated.'));
+
 		$options['query']['access_token'] = $this->access_token;
 		$result = $this->makeRequest($url, $options);
 		return $result;

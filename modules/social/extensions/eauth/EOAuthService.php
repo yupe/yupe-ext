@@ -3,7 +3,7 @@
  * EOAuthService class file.
  *
  * @author Maxim Zemskov <nodge@yandex.ru>
- * @link http://code.google.com/p/yii-eauth/
+ * @link http://github.com/Nodge/yii-eauth/
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
@@ -97,9 +97,6 @@ abstract class EOAuthService extends EAuthServiceBase implements IAuthService {
 	protected function initRequest($url, $options = array()) {
 		$ch = parent::initRequest($url, $options);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));
-		if (isset($params['data'])) {
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml","SOAPAction: \"/soap/action/query\"", "Content-length: ".strlen($data))); 
-		}
 		return $ch;
 	}
 	
@@ -113,16 +110,21 @@ abstract class EOAuthService extends EAuthServiceBase implements IAuthService {
 	 */
 	public function makeSignedRequest($url, $options = array(), $parseJson = true) {
 		if (!$this->getIsAuthenticated())
-			throw new CHttpException(401, 'Unable to complete the authentication because the required data was not received.');
+			throw new CHttpException(401, Yii::t('eauth', 'Unable to complete the request because the user was not authenticated.'));
 						
 		$consumer = $this->getConsumer();
 		$signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
 		$token = $this->getAccessToken();
 
-		$request = OAuthRequest::from_consumer_and_token($consumer, $token, isset($options['data']) ? 'POST' : 'GET', $url);
-		$request->sign_request($signatureMethod, $consumer, $token);
-		$url = $request->to_url();
+		$query = null;
+		if (isset($options['query'])) {
+			$query = $options['query'];
+			unset($options['query']);
+		}
 		
-		return $this->makeRequest($url, $options, $parseJson);
+		$request = OAuthRequest::from_consumer_and_token($consumer, $token, isset($options['data']) ? 'POST' : 'GET', $url, $query);
+		$request->sign_request($signatureMethod, $consumer, $token);
+		
+		return $this->makeRequest($request->to_url(), $options, $parseJson);
 	}
 }

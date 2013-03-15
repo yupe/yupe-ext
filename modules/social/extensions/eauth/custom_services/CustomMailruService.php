@@ -3,7 +3,7 @@
  * An example of extending the provider class.
  *
  * @author ChooJoy <choojoy.work@gmail.com>
- * @link http://code.google.com/p/yii-eauth/
+ * @link http://github.com/Nodge/yii-eauth/
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
  
@@ -14,7 +14,7 @@ class CustomMailruService extends MailruOAuthService {
 	protected function fetchAttributes() {
 		$info = (array)$this->makeSignedRequest('http://www.appsmail.ru/platform/api', array(
 			'query' => array(
-				'uids' => $this->getUid(),
+				'uids' => $this->uid,
 				'method' => 'users.getInfo',
 				'app_id' => $this->client_id,
 			),

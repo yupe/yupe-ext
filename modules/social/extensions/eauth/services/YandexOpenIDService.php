@@ -3,7 +3,7 @@
  * YandexOpenIDService class file.
  *
  * @author Maxim Zemskov <nodge@yandex.ru>
- * @link http://code.google.com/p/yii-eauth/
+ * @link http://github.com/Nodge/yii-eauth/
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
@@ -16,11 +16,11 @@ require_once dirname(dirname(__FILE__)).'/EOpenIDService.php';
 class YandexOpenIDService extends EOpenIDService {
 	
 	protected $name = 'yandex';
-	protected $title = 'Яндекс';
+	protected $title = 'Yandex';
 	protected $type = 'OpenID';
 	protected $jsArguments = array('popup' => array('width' => 900, 'height' => 550));
 	
-	protected $url = 'http://openid.yandex.ru/trusted_request/';
+	protected $url = 'http://openid.yandex.ru/';
 	protected $requiredAttributes = array(
 		'name' => array('fullname', 'namePerson'),
 		//'username' => array('nickname', 'namePerson/friendly'),
