@@ -28,7 +28,7 @@ class SocialModule extends YWebModule
             'vkontakteClientSecret',
             'mailruClientId',
             'mailruClientSecret',
-        );
+            );
     }
 
     public function getParamsLabels()

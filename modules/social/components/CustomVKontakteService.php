@@ -15,17 +15,19 @@ class CustomVKontakteService extends VKontakteOAuthService
 
     protected function fetchAttributes()
     {
-        $info = (array)$this->makeSignedRequest('https://api.vkontakte.ru/method/getProfiles', array('query' => array(
-            'uids'   => $this->getUid(),
-          //'fields' => '', // uid, first_name and last_name is always available
-            'fields' => 'nickname, sex, bdate, city, country, timezone, photo, photo_medium, photo_big, photo_rec',
-        )));
+        $info = (array)$this->makeSignedRequest('https://api.vk.com/method/users.get.json', array(
+            'query' => array(
+                'uids' => $this->uid,
+                //'fields' => '', // uid, first_name and last_name is always available
+                'fields' => 'nickname, sex, bdate, city, country, timezone, photo, photo_medium, photo_big, photo_rec',
+            ),
+        ));
 
         $info = $info['response'][0];
 
         $this->attributes['id']           = $info->uid;
         $this->attributes['name']         = $info->first_name . ' ' . $info->last_name;
-        $this->attributes['url']          = 'http://vkontakte.ru/id' . $info->uid;
+        $this->attributes['url']          = 'http://vk.com/id' . $info->uid;
 
         $this->attributes['nick']         = (!empty($info->nickname)) ? $info->nickname : 'id' . $info->uid;
         $this->attributes['first_name']   = $info->first_name;

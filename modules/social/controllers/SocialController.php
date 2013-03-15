@@ -10,10 +10,13 @@ class SocialController extends YFrontController
 
     public function actionLogin()
     {
-        $service = Yii::app()->request->getQuery('service');
+
+      $service = Yii::app()->request->getQuery('service');
+
 
         if ($service !== null)
         {
+
             $authIdentity = Yii::app()->eauth->getIdentity($service);
             $authIdentity->redirectUrl = Yii::app()->user->returnUrl;
             $authIdentity->cancelUrl = $this->createAbsoluteUrl('/social/social/login');

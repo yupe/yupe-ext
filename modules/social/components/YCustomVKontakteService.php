@@ -12,9 +12,11 @@ class YCustomVkontakteService extends CustomVKontakteService
     {
         $module = Yii::app()->getModule('social');
 
+
         $this->client_id     = $module->vkontakteClientId;
         $this->client_secret = $module->vkontakteClientSecret;
 
         parent::init($component, $options);
+
     }
 }
