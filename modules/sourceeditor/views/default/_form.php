@@ -12,7 +12,7 @@
             tabMode: "shift"
         });
 
-        $('#data-save').live('click',function(){
+        $('##<?php echo md5($path).time() ?>').live('click',function(){
             editor.save();
             $.post('/sourceeditor/default/updatefile',$('#cd-form').serialize(),function(response){
                 if(response.result){
@@ -45,5 +45,5 @@
 <?php echo CHtml::textArea('codemirror', $fcontent); ?>
 <input type="hidden" id="path" name="path" value="<?php echo $path ?>">
 <div style="position: relative; left: 27px; top: 23px;">
-    <?php echo CHtml::button(Yii::t('Sourceeditor.files', 'Сохранить файл'),array('id' => 'data-save','class' => 'btn btn-primary'));?>
+    <?php echo CHtml::button(Yii::t('Sourceeditor.files', 'Сохранить файл'),array('id' => 'md5($path).time()','class' => 'btn btn-primary'));?>
 <?php $this->endWidget(); ?>
