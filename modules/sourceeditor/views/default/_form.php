@@ -12,7 +12,7 @@
             tabMode: "shift"
         });
 
-        $('##<?php echo md5($path).time() ?>').live('click',function(){
+        $('#<?php echo md5($path).time() ?>').live('click',function(){
             editor.save();
             $.post('/sourceeditor/default/updatefile',$('#cd-form').serialize(),function(response){
                 if(response.result){
