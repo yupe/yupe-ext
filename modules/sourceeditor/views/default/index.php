@@ -11,7 +11,6 @@ $this->breadcrumbs = array(
 <?php $path = Yii::app()->assetManager->publish(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'assets');
 Yii::app()->getClientScript()
     ->registerScriptFile($path . '/jquery/jquery-ui.custom.js')
-    ->registerScriptFile($path . '/jquery/jquery.cookie.js')
     ->registerScriptFile($path . '/src/jquery.dynatree.js')
     ->registerScriptFile($path . '/lib/codemirror.js')
     ->registerScriptFile($path . '/addon/edit/matchbrackets.js')
@@ -39,7 +38,7 @@ Yii::app()->getClientScript()
                         data: {key: node.data.url,},
                       });
                       },
-                    onClick: function(node){
+                    onDblClick: function(node){
                         if(node.data.url)
                            $.ajax({
                            url: "/sourceeditor/default/getfilecontent",
