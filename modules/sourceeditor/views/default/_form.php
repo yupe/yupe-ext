@@ -45,5 +45,5 @@
 <?php echo CHtml::textArea('codemirror', $fcontent); ?>
 <input type="hidden" id="path" name="path" value="<?php echo $path ?>">
 <div style="position: relative; left: 27px; top: 23px;">
-    <?php echo CHtml::button(Yii::t('Sourceeditor.files', 'Сохранить файл'),array('id' => 'md5($path).time()','class' => 'btn btn-primary'));?>
+    <?php echo CHtml::button(Yii::t('Sourceeditor.files', 'Сохранить файл'),array('id' => md5($path).time(),'class' => 'btn btn-primary'));?>
 <?php $this->endWidget(); ?>
