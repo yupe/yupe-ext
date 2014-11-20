@@ -27,8 +27,10 @@ class MetrikaWidget extends yupe\widgets\YWidget
 
     public function run()
     {
-        $this->render($this->view, array(
-            'url' => Yii::app()->getBaseUrl(true).'/metrika'
-        ));
+        $url = Yii::app()->createAbsoluteUrl('metrika/metrika/index');
+        Yii::app()->clientScript->registerScript(
+            'MetrikaScript',
+            "$.get('".$url."');"
+        );
     }
 }
