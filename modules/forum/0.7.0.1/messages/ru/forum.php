@@ -54,6 +54,7 @@ return array (
     'Close' => 'Закрыт',
     'User' => 'Пользователь',
     'Date' => 'Дата',
+    'Please, {login} or {register} for free to leave a message!' => 'Пожалуйста, {login} или {register} для возможности оставить сообщение!',
     //forum
     'This section describes forum management' => 'В данном разделе представлены средства управления форумами',
     'Do you really want to remove forum?' => 'Вы уверены, что хотите удалить форум?',

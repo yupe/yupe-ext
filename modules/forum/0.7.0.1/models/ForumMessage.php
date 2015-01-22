@@ -12,6 +12,8 @@
  */
 class ForumMessage extends yupe\models\YModel
 {
+    const PAGINATION_COUNT = 5;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -137,7 +139,6 @@ class ForumMessage extends yupe\models\YModel
     public function getUserList()
     {
         $users = User::model()->findAll();
-
         $list = array();
 
         foreach ($users as $user) {
@@ -146,5 +147,17 @@ class ForumMessage extends yupe\models\YModel
         }
 
         return $list;
+    }
+
+    public static function getMessages($topicId)
+    {
+        $messages = new ForumMessage('search');
+        $messages->unsetAttributes();
+        $messages->topic_id = $topicId;
+
+        $dataProvider = $messages->search();
+        $dataProvider->pagination->pageSize = self::PAGINATION_COUNT;
+
+        return $dataProvider;
     }
 }

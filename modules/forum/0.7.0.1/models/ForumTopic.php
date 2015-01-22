@@ -17,8 +17,6 @@ class ForumTopic extends yupe\models\YModel
     const STATUS_OPEN = 1;
     const STATUS_CLOSE = 2;
 
-    const PAGINATION_MESSAGE = 50;
-
 	/**
 	 * @return string the associated database table name
 	 */
@@ -158,18 +156,6 @@ class ForumTopic extends yupe\models\YModel
         }
 
         return $list;
-    }
-
-    public function getMessages()
-    {
-        $message = new ForumMessage('search');
-        $message->unsetAttributes();
-        $message->topic_id = $this->id;
-
-        $dataProvider = $message->search();
-        $dataProvider->pagination->pageSize = self::PAGINATION_MESSAGE;
-
-        return $dataProvider;
     }
 
     public function getLastMessage()
