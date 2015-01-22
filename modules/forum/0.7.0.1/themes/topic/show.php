@@ -13,18 +13,20 @@ $this->breadcrumbs = array_merge(
     </div>
 </div>
 <div class="tab-block">
-    <ul class="tabset">
+    <ul class="tabdef">
         <li class="active"><a>Сообщения</a></li>
     </ul>
-    <div class="tab-content" style="display: block;">
-        <div class="table-exchange-rate">
+    <div class="tab-content">
+        <div class="table-list">
             <?php $this->widget('zii.widgets.grid.CGridView', array(
-                'id'           => 'forum-message-grid',
-                'dataProvider' => $topic->getMessages(),
+                'id'           => 'topic-message-grid',
+                'dataProvider' => ForumMessage::getMessages($topic->id),
                 'enableSorting' => false,
                 'template' => '{items}{pager}',
+                'ajaxUpdate' => true,
                 'pager'=>array(
                     'header' => '',
+                    'maxButtonCount'=>'5',
                     'htmlOptions' => array(
                         'style' => 'float: right; margin-top: 8px;'
                     ),
@@ -35,15 +37,23 @@ $this->breadcrumbs = array_merge(
                 'columns'      => array(
                     array(
                         'name'  => 'user_id',
+                        'htmlOptions' => array('style' => 'width:50px'),
                         'value' => '$data->getUserNickname()',
                     ),
                     array(
                         'name' => 'message',
                         'type' => 'ntext',
                     ),
-                    'date',
+                    array(
+                        'name' => 'date',
+                        'htmlOptions' => array('style' => 'width:120px'),
+                    )
                 ),
             )); ?>
         </div>
     </div>
+</div>
+
+<div style="width: 500px;margin: 50px auto;">
+    <?php $this->widget('application.modules.forum.widgets.MessageFormWidget'); ?>
 </div>
