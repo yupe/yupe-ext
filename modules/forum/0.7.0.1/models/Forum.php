@@ -187,28 +187,38 @@ class Forum extends yupe\models\YModel
         return Forum::model()->open()->findAllByAttributes(array('parent_id' => $this->id));
     }
 
-    public function getTopics()
+    public function getTopics($limit = -1)
     {
-        return ForumTopic::model()->open()->findAllByAttributes(array('forum_id' => $this->id));
+        $criteria = new CDbCriteria();
+        $criteria->compare('forum_id',$this->id);
+        $criteria->join = 'LEFT JOIN '.ForumMessage::model()->tableName().' AS fm ON fm.topic_id=t.id';
+        $criteria->order = 'fm.topic_id DESC';
+        $criteria->group='t.id';
+        $criteria->limit = $limit;
+
+        return ForumTopic::model()->findAll($criteria);
     }
 
     public function getTopicsMessageCount()
     {
         $topics = $this->getTopics();
         $count = 0;
-        foreach($topics as $topic)
+        foreach($topics as $topic) {
             $count += $topic->messageCount;
+        }
 
         return $count;
     }
 
     public function getLastMessage()
     {
-        $topics = $this->getTopics();
-        $messages = array();
-        foreach($topics as $topic)
-            $messages[] = $topic->getLastMessage();
+        $limit = 1;
+        $topic = array_shift($this->getTopics($limit));
 
-        return array_pop($messages);
+        if ( !is_null($topic) ) {
+            return $topic->getLastMessage();
+        }
+
+        return $topic;
     }
 }
