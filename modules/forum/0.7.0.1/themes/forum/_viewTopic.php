@@ -12,6 +12,9 @@
                 <td>
                     <a href="<?php echo Yii::app()->createUrl('/forum/topic/show', array('alias' => $topic->alias )); ?>" style="text-decoration: none; display: block;">
                         <?php echo $topic->title; ?>
+                        <?php if ( $topic->status == ForumTopic::STATUS_CLOSE ) : ?>
+                            <br/><b>закрыт</b>
+                        <?php endif; ?>
                     </a>
                 </td>
                 <td width="100">

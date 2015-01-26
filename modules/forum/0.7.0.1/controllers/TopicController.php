@@ -21,7 +21,7 @@ class TopicController extends yupe\components\controllers\FrontController
      */
     public function actionShow($alias = null)
     {
-        $topic = ForumTopic::model()->open()->findByAttributes(array(
+        $topic = ForumTopic::model()->findByAttributes(array(
             'alias' => $alias,
         ));
 

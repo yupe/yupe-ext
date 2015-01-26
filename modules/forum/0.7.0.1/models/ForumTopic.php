@@ -17,6 +17,7 @@ class ForumTopic extends yupe\models\YModel
     const STATUS_OPEN = 1;
     const STATUS_CLOSE = 2;
 
+    const PAGINATION_COUNT = 5;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -52,16 +53,6 @@ class ForumTopic extends yupe\models\YModel
             'messageCount' => array(self::STAT, 'ForumMessage', 'topic_id'),
         );
 	}
-
-    public function scopes()
-    {
-        return array(
-            'open' => array(
-                'condition' => 't.status = :status',
-                'params' => array(':status' => self::STATUS_OPEN),
-            ),
-        );
-    }
 
 	/**
 	 * @return array customized attribute labels (name=>label)
@@ -156,6 +147,18 @@ class ForumTopic extends yupe\models\YModel
         }
 
         return $list;
+    }
+
+    public function getMessages()
+    {
+        $messages = new ForumMessage('search');
+        $messages->unsetAttributes();
+        $messages->topic_id = $this->id;
+
+        $dataProvider = $messages->search();
+        $dataProvider->pagination->pageSize = self::PAGINATION_COUNT;
+
+        return $dataProvider;
     }
 
     public function getLastMessage()

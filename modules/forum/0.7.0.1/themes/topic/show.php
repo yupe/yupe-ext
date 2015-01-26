@@ -20,7 +20,7 @@ $this->breadcrumbs = array_merge(
         <div class="table-list">
             <?php $this->widget('zii.widgets.grid.CGridView', array(
                 'id'           => 'topic-message-grid',
-                'dataProvider' => ForumMessage::getMessages($topic->id),
+                'dataProvider' => $topic->getMessages(),
                 'enableSorting' => false,
                 'template' => '{items}{pager}',
                 'ajaxUpdate' => true,
@@ -55,5 +55,7 @@ $this->breadcrumbs = array_merge(
 </div>
 
 <div style="width: 500px;margin: 50px auto;">
-    <?php $this->widget('application.modules.forum.widgets.MessageFormWidget'); ?>
+    <?php $this->widget('application.modules.forum.widgets.MessageFormWidget',
+        array('topic' => $topic)
+    ); ?>
 </div>
