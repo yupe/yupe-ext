@@ -10,5 +10,6 @@ composer.phar
 *.xml
 *.properties
 nbproject/
+/.idea/
 *.*~
 *.yml
