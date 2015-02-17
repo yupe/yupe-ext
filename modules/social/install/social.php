@@ -24,6 +24,8 @@ return array(
             'services' => array( // you can change the providers and their classes.
                 'google' => array('class' => 'CustomGoogleService'),
                 'yandex' => array('class' => 'CustomYandexService'),
+                'vkontakte' => array('class' => 'YCustomVkontakteService'),
+
             ),
         ),
     ),
