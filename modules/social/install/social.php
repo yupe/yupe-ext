@@ -25,7 +25,6 @@ return array(
                 'google' => array('class' => 'CustomGoogleService'),
                 'yandex' => array('class' => 'CustomYandexService'),
                 'vkontakte' => array('class' => 'YCustomVkontakteService'),
-
             ),
         ),
     ),
