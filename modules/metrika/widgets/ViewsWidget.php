@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Виджет для просмотра количества просмторов страницы
+ * Виджет для вывода количества просмотров страницы
  *
  * @category YupeWidget
  * @package  yupe.modules.metrika.widgets
