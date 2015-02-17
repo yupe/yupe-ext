@@ -1,1 +1,15 @@
-/.idea
+*.log
+composer.phar
+*.bin
+*.settings
+.project
+*db.php
+*.komodoproject
+/nbproject/private/
+/.komodotools/
+*.xml
+*.properties
+nbproject/
+/.idea/
+*.*~
+*.yml
